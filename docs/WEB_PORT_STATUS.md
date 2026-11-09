@@ -12,9 +12,11 @@
 
 1. `src/api.ts` 直接匯入 `@tauri-apps/api/core` 的 `invoke()`。一般 Safari 沒有 Tauri runtime，呼叫 `app_boot`、`api_feed`、`api_search`、`api_video`、`api_play` 等命令會失敗。
 2. `src-tauri/src/api.rs` 將資料請求交給 Rust 的 `edge()` / `net` 層。這層使用原生 HTTP 客戶端、來源檢查、DNS 檢查、重新導向控制及目前選定的上游線路。它不是一般瀏覽器可直接呼叫的 JavaScript 模組。
-3. `src/api.ts` 的封面與 HLS 播放清單會被改寫成 `hg://localhost` 或 `http://hg.localhost`。這些是 Tauri 自訂協定，不是 Safari 網站可使用的網址。
-4. `src-tauri/src/media.rs` 負責封面解密、HLS 播放清單重寫、分片與金鑰請求。只部署靜態網頁不會包含這些能力。
-5. `src/App.tsx`、`src/main.tsx`、播放診斷及設定頁也有 Tauri 專用呼叫。即使首頁畫面能載入，仍須處理初始化、除錯、設定與平台判斷。
+3. 進一步檢查 `src-tauri/src/net.rs` 後確認：即使是「訪客 GET」，Rust 也不是直接對 `/api/videos` 發 GET，而是對 `/api/edge/request` 發送 JSON 格式的 POST 信封，內含原始 method/path/body/content_type；並設定 `Accept: application/json`、`Referer`。登入後另加 Authorization 標頭。
+4. 因為上述請求使用 JSON POST（登入後還有 Authorization），一般網站跨來源呼叫時會涉及瀏覽器 CORS 預檢 OPTIONS。伺服器必須明確允許網站來源、POST/OPTIONS 及所需標頭，瀏覽器才會交付回應。不能用前端設定或 `no-cors` 模式繞過，因為 opaque response 無法讀取 JSON 資料。
+5. `src/api.ts` 的封面與 HLS 播放清單會被改寫成 `hg://localhost` 或 `http://hg.localhost`。這些是 Tauri 自訂協定，不是 Safari 網站可使用的網址。
+6. `src-tauri/src/media.rs` 負責封面 AES-128-CBC 解密、HLS 播放清單重寫、分片與金鑰請求。只部署靜態網頁不會包含這些能力。
+7. `src/App.tsx`、`src/main.tsx`、播放診斷及設定頁也有 Tauri 專用呼叫。即使首頁畫面能載入，仍須處理初始化、除錯、設定與平台判斷。
 
 ## 官方文件確認的額外限制
 
@@ -23,7 +25,7 @@
 - HLS 播放清單、分片與金鑰會經自訂協定代理及重寫，目的是處理 WebView 的 CORS 與防盜鏈問題。
 - 官方安全文件要求圖片、HLS、分片及其他遠端目標經 Rust 網路安全政策檢查。
 
-這些是原作者對現有架構的明確說明，不是我們已實測 Safari 一定會被拒絕。上游 API 是否允許瀏覽器跨來源存取，目前仍沒有可靠證據；不能把「未知」當成「允許」。因此尚未對上游進行高頻或批量探測，也不會用第三方 CORS 代理來猜測結果。
+這些是原作者對現有架構的明確說明，不是我們已實測 Safari 一定會被拒絕。上游 API 是否允許瀏覽器跨來源存取，目前仍沒有可靠證據；不能把「未知」當成「允許」。依照目前讀到的請求格式，直接瀏覽器存取至少需要上游明確支援 OPTIONS 預檢及相應 CORS 標頭。尚未對上游進行高頻或批量探測，也不會用第三方 CORS 代理來猜測結果。
 
 ## 功能初步分類
 
@@ -59,9 +61,9 @@ Rust API 對留言送出、按讚、收藏、追蹤等寫入操作會檢查登�
 
 ## 下一步
 
-1. 繼續檢查前端啟動流程、訪客初始化與各頁面對原生功能的依賴。
-2. 只在不增加上游負載的前提下，確認官方上游是否提供可供瀏覽器使用的 API/CORS 支援。
-3. 若上游沒有允許的瀏覽器存取方式，就先停止資料層改寫，不用公開代理或繞過限制的方式硬做。
+1. 確認上游是否明確允許網站來源呼叫 `/api/edge/request`，尤其是 JSON POST 的 OPTIONS 預檢；目前不以未驗證的第三方代理代測。
+2. 若上游不允許 CORS，檢查是否存在原作者或上游正式提供、允許個人使用的 Web API／網頁入口。
+3. 若沒有被允許的瀏覽器存取方式，就先停止資料層改寫，不用公開代理或繞過限制的方式硬做。
 4. 若資料層可行，再獨立設計封面與影片的合法、受限制處理方式。
 5. 完成後才建立瀏覽器 adapter、測試 Safari，最後才考慮部署。
 
@@ -71,6 +73,7 @@ Rust API 對留言送出、按讚、收藏、追蹤等寫入操作會檢查登�
 - [x] 確認 Vite build script 存在
 - [x] 確認資料 API 依賴 Tauri invoke
 - [x] 確認 Rust 原生網路層承擔上游 API 請求
+- [x] 確認訪客資料讀取實際使用 JSON POST 信封，並會觸發 CORS 預檢需求
 - [x] 確認媒體路徑依賴 Tauri 自訂協定及 Rust 媒體處理
 - [x] 確認原作者文件說明封面解密與 HLS CORS／防盜鏈代理目的
 - [x] 確認訪客 GET 與登入後寫入操作有不同權限要求
