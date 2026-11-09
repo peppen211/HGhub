@@ -148,3 +148,44 @@ Rust API 對留言送出、按讚、收藏、追蹤等寫入操作會檢查登�
 - [ ] 完成封面與播放方案驗證
 - [ ] 完成 Safari 實測
 - [ ] 部署網站
+
+
+## 上游存取驗證執行紀錄（2026-11-09）
+
+### 已查項目
+
+- 原始程式確認固定上游為 `https://huangguoai.com`，另有固定線路 `https://huangguoai.ai`。
+- 原始程式確認訪客資料請求是 `POST /api/edge/request`，請求內容為 JSON，包含 `method`、`path`、`body`、`content_type`。
+- 原始程式確認請求另帶 `Accept: application/json` 與 `Referer`。
+- 以公開網頁檢索未找到上游公開的 CORS／Web API 使用說明。
+- 嘗試透過可用的公開網頁讀取方式開啟 API endpoint，該讀取工具無法存取此 endpoint。這不是上游回傳的 HTTP 狀態，也不能據此判定上游故障或 CORS 拒絕。
+- 沒有發送登入、個人資料、寫入操作、影片播放或大量請求。
+
+### 尚未完成的驗證
+
+目前尚未取得上游對 CORS 預檢的原始 HTTP 回應標頭，也尚未從正式網頁來源執行 Safari fetch。原因是目前尚未有可用的正式網站來源網域，而且目前可用的公開讀取工具不支援指定 OPTIONS 方法及完整自訂請求標頭。
+
+不能用一般 GET 網頁檢索結果替代 CORS 預檢測試，也不能把工具無法讀取 endpoint 誤判成上游拒絕。
+
+### 正式驗證需要的請求
+
+待有正式測試來源網域後，僅對訪客唯讀 endpoint 發送一次 CORS 預檢：
+
+```http
+OPTIONS /api/edge/request
+Origin: <正式測試網站來源>
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: content-type
+```
+
+檢查回應是否明確允許該來源、POST 及 Content-Type。只有預檢通過，才由真正的瀏覽器頁面發送一次最小化訪客唯讀請求，例如信封內的 `GET /api/videos?page=1&size=1`。不測試登入、帳號、寫入或媒體 URL。
+
+若預檢不通過，立即停止，不嘗試改用 `no-cors`、第三方 CORS 代理、偽造 Origin 或其他規避方式。
+
+### 當前阻塞
+
+- [ ] 尚無正式測試來源網域
+- [ ] 尚無可取得原始 OPTIONS 回應標頭的執行環境
+- [ ] 尚未從 Safari 正式來源完成 fetch 測試
+
+因此本階段不應建立正式資料 adapter，也不應部署網站。先完成上述最小化驗證，才決定下一階段。
