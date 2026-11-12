@@ -237,4 +237,37 @@ render();
  document.head.appendChild(style);
  saveEquip();
 })();
+
+/* Equipment slots, relic activation and durable save */
+(function(){
+ let worn={};try{worn=JSON.parse(localStorage.getItem('wandao_worn_v1')||'{}')||{};}catch(e){}
+ window.equipItem=function(type,name){
+   const previous=worn[type];worn[type]=name;
+   if(!previous)power+=90;
+   try{localStorage.setItem('wandao_worn_v1',JSON.stringify(worn));}catch(e){}
+   saveGame();render();toast('已裝備：'+name);
+ };
+ window.upgrade=function(type,name){
+   if(coins<100){toast('靈石不足');return;}
+   coins-=100;
+   const gain=type==='裝備'?120:type==='靈寶'?95:65;
+   power+=gain;
+   if(type==='靈寶'&&!talentOwned.includes(name))talentOwned.push(name);
+   saveGame();render();toast(name+'強化成功');
+ };
+ const oldGearView=gear;
+ gear=function(){
+   let html=oldGearView();
+   html=html.replace(/<button class="secondary" onclick="upgrade\('([^']+)','([^']+)'\)">([^<]+)<\/button>/g,
+     (m,t,n,label)=>m+'<button class="secondary" onclick="equipItem(\''+t+'\',\''+n+'\')">'+(worn[t]===n?'已裝備':'裝備')+'</button>');
+   if(sub==='裝備'||sub==='靈寶'){
+     const title=sub==='裝備'?'已穿戴裝備':'啟動靈寶';
+     html+='<div class="panel"><div class="row"><b>'+title+'</b><span class="muted">效果常駐</span></div>'+
+       Object.entries(worn).filter(([k])=>k===sub).map(([k,v])=>'<p class="muted">'+v+'</p>').join('')+'</div>';
+   }
+   return html;
+ };
+ const priorSave=saveGame;
+ saveGame=function(){priorSave();try{localStorage.setItem('wandao_worn_v1',JSON.stringify(worn));}catch(e){}};
+})();
 </script></body></html>
