@@ -195,4 +195,46 @@ render();
  const prevRender=render;render=function(){prevRender();artCheck();};
  artCheck();
 })();
+
+/* Equipment collection: persistent selections and functional cultivation */
+(function(){
+ const equipped=JSON.parse(localStorage.getItem('wandao_equipped_v1')||'{}');
+ equipped.player=equipped.player||'sword';equipped.pet=equipped.pet||'iceFox';equipped.mount=equipped.mount||'御風飛劍';
+ const saveEquip=()=>{try{localStorage.setItem('wandao_equipped_v1',JSON.stringify(equipped));}catch(e){}};
+ const playerNames={sword:'劍修',mage:'法修',body:'體修'};
+ const petNames={iceFox:'雪尾靈狐',fireFox:'赤焰靈狐',turtle:'玄甲靈龜'};
+ const playerArt=()=>assetCatalog.players[equipped.player]||assetCatalog.players.sword;
+ const petArt=()=>assetCatalog.pets[equipped.pet]||assetCatalog.pets.iceFox;
+ const originalHome=home;
+ home=function(){
+   let out=originalHome();
+   out=out.replace('assets/player_sword.png',playerArt()).replace('assets/pet_ice_fox.png',petArt());
+   out=out.replace('御風飛劍・靈狐同行',equipped.mount+'・'+petNames[equipped.pet]);
+   out+=`<div class="section-title">本命形態 <small>切換修行外觀</small></div><div class="tabs">${Object.entries(playerNames).map(([k,n])=>`<button class="${equipped.player===k?'on':''}" onclick="choosePlayer('${k}')">${n}</button>`).join('')}</div>`;
+   return out;
+ };
+ window.choosePlayer=function(k){if(!assetCatalog.players[k])return;equipped.player=k;saveEquip();render();};
+ const oldGear=gear;
+ gear=function(){
+   let out=oldGear();
+   if(sub==='靈寵'){
+     out=out.replace('</div>`;', '</div>`;');
+     out+=`<div class="panel"><b>出戰靈寵</b><div class="tabs">${Object.entries(petNames).map(([k,n])=>`<button class="${equipped.pet===k?'on':''}" onclick="choosePet('${k}')">${n}</button>`).join('')}</div><img src="${petArt()}" alt="出戰靈寵" style="display:block;height:110px;max-width:100%;object-fit:contain;margin:auto"></div>`;
+   }
+   if(sub==='坐騎'){
+     out+=`<div class="panel"><b>御空法器</b><div class="tabs">${['御風飛劍','九品金蓮','紫金葫蘆','凌霄仙舟'].map(n=>`<button class="${equipped.mount===n?'on':''}" onclick="chooseMount('${n}')">${n}</button>`).join('')}</div><p class="muted">目前乘載：${equipped.mount}</p></div>`;
+   }
+   return out;
+ };
+ window.choosePet=function(k){if(!assetCatalog.pets[k])return;equipped.pet=k;saveEquip();render();};
+ window.chooseMount=function(n){equipped.mount=n;saveEquip();render();};
+ const oldStart=startBattle;
+ startBattle=function(){oldStart();const p=document.querySelector('.fighter:first-child .sigil img');if(p)p.src=playerArt();};
+ const oldBattleRender=battleRender;
+ battleRender=function(){oldBattleRender();const p=document.querySelector('.fighter:first-child .sigil img');if(p)p.src=playerArt();};
+ const style=document.createElement('style');
+ style.textContent='.hero-figure img{animation:floatSpirit 3s ease-in-out infinite}.pet-mini img{animation:floatSpirit 2.5s ease-in-out infinite}@keyframes floatSpirit{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}.tabs{flex-wrap:wrap}.tabs button{min-height:36px}';
+ document.head.appendChild(style);
+ saveEquip();
+})();
 </script></body></html>
