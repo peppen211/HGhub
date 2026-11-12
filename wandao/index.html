@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1018">
+<title>萬道仙途：天道異界</title>
+<style>
+:root{--bg:#090e16;--panel:#131d2a;--panel2:#192638;--line:#33465b;--gold:#e9c987;--cyan:#8ad8e8;--red:#ed7777;--green:#8ed0a1;--muted:#9aabba;--safe:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at 50% -15%,#263b51 0,#101a28 42%,#080d14 100%);color:#e7edf4;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+.app{width:min(100%,560px);min-height:100dvh;margin:auto;padding:0 12px calc(86px + var(--safe))}
+header{padding:calc(14px + env(safe-area-inset-top)) 4px 12px}
+.eyebrow{font-size:10px;letter-spacing:2px;color:var(--cyan);font-weight:800}
+h1{font-size:23px;margin:5px 0 2px;letter-spacing:1px;color:#f4dfb6}
+.sub{font-size:11px;color:var(--muted)}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.resource-row{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.pill{border:1px solid #34475b;border-radius:999px;background:#101a27;padding:6px 10px;font-size:11px;color:#c7d4df}
+.pill b{color:var(--gold);margin-left:4px}
+.panel{background:linear-gradient(145deg,rgba(26,41,59,.96),rgba(15,25,38,.98));border:1px solid var(--line);border-radius:16px;padding:13px;margin:10px 0;box-shadow:0 8px 24px #0003}
+.panel h2,.panel h3{margin:0 0 9px}.panel h2{font-size:15px;color:var(--gold)}.panel h3{font-size:13px}
+.hero{position:relative;overflow:hidden;min-height:160px;background:linear-gradient(110deg,#172b3c,#1c2938 52%,#3b2b29)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#101a28 0%,#101a28bb 55%,transparent 100%);pointer-events:none}
+.hero-inner{position:relative;z-index:1;max-width:75%}
+.hero .tag{font-size:10px;color:var(--cyan);letter-spacing:1px}.hero h2{font-size:21px;margin:7px 0;color:#f3dfb6}.hero p{font-size:11px;color:#c2ced8;line-height:1.6;margin:0 0 12px}
+.btn{border:1px solid #61768a;border-radius:11px;background:linear-gradient(180deg,#344b60,#203448);padding:11px 14px;font-size:12px;font-weight:800}
+.btn.primary{background:linear-gradient(180deg,#b38c50,#78572f);border-color:#d7b477;color:#fff7e7}
+.btn.ghost{background:#111d2a;border-color:#34475b}
+.btn.small{padding:7px 10px;font-size:10px}
+.full{width:100%}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.stat{background:#101a27;border:1px solid #2d4054;border-radius:10px;padding:8px 5px;text-align:center}
+.stat small{display:block;color:var(--muted);font-size:9px}.stat b{display:block;font-size:14px;margin-top:3px;color:#f0d59e}
+.bar{height:7px;background:#08111c;border-radius:20px;overflow:hidden;border:1px solid #33465a;margin-top:5px}.bar i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#a64e56,#ed8b83);border-radius:20px}.bar.xp i{background:linear-gradient(90deg,#428f9e,#8bd8e5)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}.muted{color:var(--muted);font-size:10px}
+.scene{height:155px;border:1px solid #41566b;border-radius:13px;position:relative;overflow:hidden;background:linear-gradient(180deg,#1c3448,#243343 55%,#111b26);display:flex;align-items:end;justify-content:space-between;padding:12px}
+.scene:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 20%,#9bc3ce22,transparent 50%),linear-gradient(155deg,transparent 40%,#080f19aa 100%)}
+.scene-title{position:absolute;left:12px;top:11px;z-index:2}.scene-title b{font-size:14px;color:#f0d59e}.scene-title small{display:block;color:#b7c8d5;font-size:10px;margin-top:3px}
+.actor{z-index:1;width:34%;height:104px;display:flex;align-items:end;justify-content:center;position:relative}
+.actor img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 8px 8px #0009)}
+.actor .missing{font-size:10px;color:#b5c4d0;text-align:center;border:1px dashed #73839666;border-radius:9px;padding:8px;width:100%;background:#0b142055}
+.enemy{transform:scaleX(-1)}
+.combat-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.hpbox{background:#101a27;border:1px solid #2e4257;border-radius:10px;padding:9px}.hpbox strong{font-size:11px}.hpbox .bar{margin-top:7px}
+.log{height:70px;overflow:auto;font-size:10px;line-height:1.6;color:#bdcbd7}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.card{min-height:128px;border:1px solid #62758a;border-radius:12px;padding:9px 7px;background:linear-gradient(160deg,#24384d,#121d2b);text-align:left}
+.card.rare{border-color:#4e9aa6;background:linear-gradient(160deg,#244b58,#13212d)}
+.card.legend{border-color:#c69b50;background:linear-gradient(160deg,#5a4328,#1d2732)}
+.card b{display:block;font-size:12px;color:#f3dcae;margin-bottom:6px}.card small{font-size:9px;color:#a9bdca;line-height:1.45;display:block}.card em{display:block;font-style:normal;font-size:9px;color:var(--cyan);margin-top:8px}
+.actions{display:flex;gap:7px;margin-top:9px}.actions>*{flex:1}
+.hidden{display:none!important}
+.tabs{position:fixed;z-index:5;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,560px);padding:8px 10px calc(8px + var(--safe));display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#09111dee;backdrop-filter:blur(14px);border-top:1px solid #34475b}
+.tabs button{background:transparent;border:1px solid transparent;color:#91a3b2;border-radius:9px;padding:8px 3px;font-size:10px}
+.tabs button.active{color:#f1d49b;background:#26384a;border-color:#526a80}
+.equip-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.equip{border:1px solid #34495e;background:#101a27;border-radius:10px;padding:9px;font-size:10px}.equip b{display:block;color:#e9cc91;font-size:11px;margin-bottom:4px}
+.notice{font-size:10px;color:#b8c6d1;line-height:1.6;border-left:2px solid var(--gold);padding:7px 9px;background:#0e1925;margin-top:8px}
+.overlay{position:fixed;inset:0;z-index:10;background:#03070bd9;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal{width:min(100%,500px);max-height:85dvh;overflow:auto;background:#152233;border:1px solid #60748a;border-radius:18px;padding:15px;box-shadow:0 20px 60px #000b}
+.modal h2{font-size:17px;color:var(--gold);margin:0 0 8px}.modal p{font-size:11px;color:var(--muted)}
+.toast{position:fixed;z-index:20;left:50%;bottom:90px;transform:translateX(-50%);background:#26394b;border:1px solid #7890a4;padding:9px 14px;border-radius:99px;font-size:11px;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1}
+@media(min-width:500px){.app{padding-left:18px;padding-right:18px}.scene{height:190px}.actor{height:135px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="topline"><div><div class="eyebrow">IMMORTAL PATH · ROGUELIKE</div><h1>萬道仙途：天道異界</h1><div class="sub">三十日秘境 · 一念連鎖 · 萬法歸宗</div></div><button class="btn ghost small" onclick="resetGame()">重置</button></div>
+ <div class="resource-row"><span class="pill">境界<b id="realm">煉氣一層</b></span><span class="pill">靈石<b id="stones">30</b></span><span class="pill">修為<b id="xp">0</b></span></div>
+</header>
+<main id="home">
+ <section class="panel hero"><div class="hero-inner"><div class="tag">青嵐山域 · 初入仙途</div><h2>踏入天道異界</h2><p>三十日生死試煉，斬妖奪寶，悟法破境。每一步皆有仙緣。</p><button class="btn primary" onclick="startRun()">開始本輪秘境</button></div></section>
+ <section class="panel"><h2>修士狀態</h2><div class="stats"><div class="stat"><small>氣血</small><b id="hpStat">100/100</b></div><div class="stat"><small>攻擊</small><b id="atkStat">12</b></div><div class="stat"><small>防禦</small><b id="defStat">5</b></div><div class="stat"><small>戰力</small><b id="powerStat">17</b></div></div><div class="bar"><i id="hpBar" style="width:100%"></i></div></section>
+ <section class="panel"><div class="row"><h2>秘境進度</h2><b id="dayLabel" style="font-size:12px;color:var(--gold)">尚未啟程</b></div><div class="bar xp"><i id="dayBar" style="width:0%"></i></div><p class="muted" id="homeHint">每次前進一天，遭遇隨機事件。</p></section>
+ <section class="panel"><h2>三大流派</h2><div class="cards">
+  <button class="card" onclick="choosePath('sword')"><b>劍修</b><small>飛劍連擊、暴擊追擊</small><em>高爆發</em></button>
+  <button class="card rare" onclick="choosePath('mage')"><b>法修</b><small>五行連鎖、灼燒感電</small><em>元素連鎖</em></button>
+  <button class="card legend" onclick="choosePath('body')"><b>體修</b><small>高血高防、反擊吸血</small><em>穩定續戰</em></button>
+ </div><p class="muted" id="pathLabel">尚未選擇流派</p></section>
+</main>
+<main id="realmScreen" class="hidden">
+ <section class="panel"><h2>秘境天數</h2><div class="row"><b id="dayBig">第 0 / 30 天</b><span class="muted" id="dayEvent">待啟程</span></div><div class="bar xp"><i id="dayBar2"></i></div></section>
+ <section class="panel"><div class="scene"><div class="scene-title"><b id="sceneName">青嵐山域</b><small id="sceneSub">雲霧深處，妖氣浮動</small></div><div class="actor"><img id="playerImg" src="assets/player.png" alt="主角" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="missing" style="display:none">主角素材待接入</div></div><div class="actor enemy"><img id="enemyImg" src="assets/enemy.png" alt="敵人" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="missing" style="display:none">敵方素材待接入</div></div></div></section>
+ <section class="panel"><div class="row"><h2>修士狀態</h2><span class="muted" id="battleStatus">等待事件</span></div><div class="combat-meta">
+  <div class="hpbox"><strong>本座</strong><div class="row"><span class="muted">氣血</span><b id="playerHp">100/100</b></div><div class="bar"><i id="playerHpBar" style="width:100%"></i></div></div>
+  <div class="hpbox"><strong id="enemyTitle">敵方</strong><div class="row"><span class="muted">氣血</span><b id="enemyHp">--</b></div><div class="bar"><i id="enemyHpBar" style="width:100%"></i></div></div>
+ </div><div class="notice" id="combatNotice">踏入一步，觸發今日機緣。</div></section>
+ <section class="panel"><div class="row"><h2>今日紀錄</h2><span class="muted" id="eventType">探索中</span></div><div class="log" id="log"></div><div class="actions"><button class="btn primary" id="advanceBtn" onclick="advanceDay()">踏入一步</button><button class="btn ghost" onclick="openRest()">調息</button></div></section>
+</main>
+<main id="gearScreen" class="hidden">
+ <section class="panel"><h2>六部裝備</h2><div class="equip-grid" id="equipment"></div><div class="notice">裝備掉落含隨機詞綴。點選背包物品即可穿戴。</div></section>
+ <section class="panel"><h2>背包戰利品</h2><div id="inventory" class="equip-grid"></div></section>
+</main>
+<main id="skillScreen" class="hidden">
+ <section class="panel"><div class="row"><h2>局內功法</h2><span class="muted" id="skillCount">0 項</span></div><div id="skills" class="equip-grid"></div></section>
+ <section class="panel"><h2>連鎖戰鬥紀錄</h2><div id="chainLog" class="log">尚未觸發連鎖。</div></section>
+</main>
+</div>
+<nav class="tabs"><button class="active" data-tab="home" onclick="tab('home',this)">仙途</button><button data-tab="realmScreen" onclick="tab('realmScreen',this)">秘境</button><button data-tab="gearScreen" onclick="tab('gearScreen',this)">裝備</button><button data-tab="skillScreen" onclick="tab('skillScreen',this)">功法</button></nav>
+<div id="modalRoot"></div><div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+const fresh=()=>({path:null,day:0,stones:30,xp:0,hp:100,maxHp:100,atk:12,def:5,crit:5,shield:0,run:false,ended:false,enemy:null,inventory:[],gear:{weapon:null,head:null,armor:null,bracer:null,belt:null,boots:null},skills:[],xpMeter:0,log:[],wins:0});
+let S;try{S=Object.assign(fresh(),JSON.parse(localStorage.getItem('wandao_save_v1')||'{}'))}catch(e){S=fresh()}
+const save=()=>localStorage.setItem('wandao_save_v1',JSON.stringify(S));
+const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const names={sword:'劍修',mage:'法修',body:'體修'};
+const gearSlots=[['weapon','武器'],['head','頭盔'],['armor','衣服'],['bracer','護腕'],['belt','腰帶'],['boots','鞋子']];
+const affixes=['破甲','聚靈','嗜血','迅捷','堅韌','暴擊','御法','回春'];
+const gearNames={weapon:['青鋒劍','玄鐵長刀','流光劍'],head:['雲紋冠','玄鐵盔','玉簪冠'],armor:['青雲法袍','玄鱗甲','流霞衣'],bracer:['裂風護腕','靈絲腕甲'],belt:['鎮山腰帶','納氣玉帶'],boots:['踏雲靴','逐風履']};
+const skillDB=[
+ {id:'flying',name:'御劍術',rarity:'普通',desc:'普攻 30% 觸發飛劍追擊',kind:'sword'},
+ {id:'crit',name:'劍心通明',rarity:'稀有',desc:'暴擊率提升 12%',kind:'sword'},
+ {id:'thunder',name:'引雷訣',rarity:'稀有',desc:'飛劍命中 35% 引天雷',kind:'sword'},
+ {id:'lifesteal',name:'噬血雷光',rarity:'傳奇',desc:'天雷命中恢復 5 氣血',kind:'sword'},
+ {id:'burn',name:'赤炎訣',rarity:'普通',desc:'法術命中附加灼燒',kind:'mage'},
+ {id:'shock',name:'五行引動',rarity:'稀有',desc:'灼燒 30% 觸發感電',kind:'mage'},
+ {id:'storm',name:'九霄雷池',rarity:'傳奇',desc:'感電後追加雷暴傷害',kind:'mage'},
+ {id:'iron',name:'金身訣',rarity:'普通',desc:'最大氣血提升 20',kind:'body'},
+ {id:'counter',name:'反震真意',rarity:'稀有',desc:'受擊 35% 反擊敵人',kind:'body'},
+ {id:'blood',name:'不滅戰體',rarity:'傳奇',desc:'反擊命中恢復 6 氣血',kind:'body'}
+];
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1500)}
+function note(t){S.log.unshift(t);S.log=S.log.slice(0,12);$('log').innerHTML=S.log.map(x=>'<div>・'+x+'</div>').join('')}
+function tab(id,el){document.querySelectorAll('main').forEach(x=>x.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));el.classList.add('active');render()}
+function choosePath(p){if(S.run&&S.day>0){toast('本輪流派不可更改');return}S.path=p;S.atk=p==='sword'?14:p==='mage'?13:10;S.def=p==='body'?9:5;S.maxHp=p==='body'?125:100;S.hp=S.maxHp;$('pathLabel').textContent='已選擇：'+names[p];note('道途已定：'+names[p]);save();render()}
+function startRun(){if(!S.path){toast('請先選擇流派');return}S.run=true;S.ended=false;S.day=0;S.hp=S.maxHp;S.xpMeter=0;S.log=[];note('秘境開啟，天道注視。');tab('realmScreen',document.querySelector('[data-tab="realmScreen"]'))}
+function advanceDay(){if(!S.run||S.ended){toast('請先開啟新一輪');return}if(S.day>=30)return;S.day++;$('dayEvent').textContent='第 '+S.day+' 日';if(S.day===15){startBattle('elite');return}if(S.day===30){startBattle('boss');return}
+ const roll=Math.random();if(roll<.54)startBattle('normal');else if(roll<.82)randomEvent();else treasure();render();save()}
+function startBattle(type){let base=type==='boss'?180:type==='elite'?85:34+S.day*3;S.enemy={type,hp:base,max:base,atk:type==='boss'?22:type==='elite'?13:6+Math.floor(S.day*.7),name:type==='boss'?'天道異獸':type==='elite'?'秘境精英':'山嶺妖獸'};$('sceneName').textContent=type==='boss'?'天道異界核心':type==='elite'?'秘境深處':'妖氣突現';$('sceneSub').textContent='敵意鎖定，戰鬥自動開始';$('enemyTitle').textContent=S.enemy.name;$('battleStatus').textContent='自動戰鬥';note('遭遇'+S.enemy.name);combatLoop();save()}
+function combatLoop(){
+ if(!S.enemy)return;
+ let e=S.enemy, turn=0, lines=[];
+ while(S.enemy && e.hp>0 && S.hp>0 && turn<40){
+  turn++;
+  let hit=Math.max(1,S.atk+rand(-2,3));e.hp-=hit;lines.push('普攻 '+hit);
+  if(S.path==='sword'&&has('flying')&&Math.random()<.3){
+   let d=Math.round(hit*.65);e.hp-=d;lines.push('飛劍 '+d);
+   if(has('thunder')&&Math.random()<.35){let z=rand(8,14);e.hp-=z;lines.push('天雷 '+z);if(has('lifesteal')){S.hp=Math.min(S.maxHp,S.hp+5);lines.push('吸血 +5')}}
+  }
+  if(S.path==='mage'&&has('burn')){let d=rand(4,8);e.hp-=d;lines.push('灼燒 '+d);if(has('shock')&&Math.random()<.3){let z=rand(6,10);e.hp-=z;lines.push('感電 '+z);if(has('storm')){e.hp-=12;lines.push('雷暴 12')}}}
+  if(e.hp<=0)break;
+  let incoming=Math.max(1,e.atk-S.def);S.hp-=incoming;lines.push('受擊 '+incoming);
+  if(S.path==='body'&&has('counter')&&Math.random()<.35){e.hp-=8;lines.push('反震 8');if(has('blood')){S.hp=Math.min(S.maxHp,S.hp+6);lines.push('吸血 +6')}}
+ }
+ S.enemy=null;
+ if(e.hp<=0){
+  S.wins++;S.stones+=e.type==='boss'?100:e.type==='elite'?45:rand(8,18);
+  S.xp+=e.type==='boss'?100:e.type==='elite'?35:12;
+  S.xpMeter+=e.type==='boss'?100:e.type==='elite'?35:12;
+  S.inventory.push(makeGear());note('擊敗敵人，獲得戰利品');
+  $('combatNotice').textContent=lines.slice(-8).join(' → ');
+  if(S.xpMeter>=50){S.xpMeter-=50;showSkillChoice()}
+  if(e.type==='boss'){S.ended=true;S.run=false;note('三十日試煉完成！')}
+ }else{
+  S.hp=0;S.ended=true;S.run=false;note('氣血耗盡，秘境試煉失敗');
+  $('combatNotice').textContent='試煉失敗，請重整旗鼓';
+ }
+ render();save();
+}
+function randomEvent(){let r=rand(1,3);if(r===1){let n=rand(12,24);S.hp=Math.min(S.maxHp,S.hp+n);note('靈泉洗髓，恢復 '+n+' 氣血');$('eventType').textContent='靈泉奇遇'}else if(r===2){let n=rand(18,35);S.stones+=n;note('拾獲散落靈石 '+n);$('eventType').textContent='靈石奇遇'}else{let cost=10;if(S.stones>=cost){S.stones-=cost;S.atk+=2;note('黑市秘藥，攻擊永久 +2')}else note('黑市關門，空手而回');$('eventType').textContent='神秘黑市'}render();save()}
+function treasure(){let g=makeGear();S.inventory.push(g);S.stones+=rand(3,10);note('開啟寶箱，獲得 '+g.name);$('eventType').textContent='秘境寶箱';render();save()}
+function makeGear(){let [slot,label]=pick(gearSlots);let rarityRoll=Math.random();let rarity=rarityRoll>.96?'橘':rarityRoll>.78?'黃':rarityRoll>.38?'藍':'白';let power=rarity==='橘'?9:rarity==='黃'?6:rarity==='藍'?3:1;return{id:Date.now()+Math.random(),slot,label,name:pick(gearNames[slot]),rarity,affix:pick(affixes),power,bonus:power+rand(0,2)}}
+function equip(id){let g=S.inventory.find(x=>x.id===id);if(!g)return;S.gear[g.slot]=g;S.atk+=g.slot==='weapon'?g.bonus:Math.ceil(g.bonus/2);S.def+=g.slot==='armor'||g.slot==='head'?Math.ceil(g.bonus/2):0;S.inventory=S.inventory.filter(x=>x.id!==id);note('穿戴 '+g.name);render();save()}
+function has(id){return S.skills.some(x=>x.id===id)}
+function showSkillChoice(){let pool=skillDB.filter(x=>x.kind===S.path&&!has(x.id));if(!pool.length)return;let choices=[];while(choices.length<Math.min(3,pool.length)){let s=pick(pool);if(!choices.includes(s))choices.push(s)}$('modalRoot').innerHTML='<div class="overlay"><div class="modal"><h2>修為突破 · 功法三選一</h2><p>選擇一門功法，改寫本輪戰局。</p><div class="cards">'+choices.map(s=>'<button class="card '+(s.rarity==='傳奇'?'legend':s.rarity==='稀有'?'rare':'')+'" onclick="learn(\''+s.id+'\')"><b>'+s.name+'</b><small>'+s.desc+'</small><em>'+s.rarity+'</em></button>').join('')+'</div></div></div>'}
+function learn(id){let s=skillDB.find(x=>x.id===id);if(s){S.skills.push(s);note('領悟 '+s.name);$('modalRoot').innerHTML='';render();save()}}
+function openRest(){let heal=Math.min(S.maxHp-S.hp,Math.floor(S.maxHp*.25));S.hp+=heal;note('調息恢復 '+heal+' 氣血');render();save()}
+function resetGame(){if(!confirm('確定重置所有進度？'))return;S=fresh();save();location.reload()}
+function render(){ $('realm').textContent=S.path?names[S.path]+'修':'未定';$('stones').textContent=S.stones;$('xp').textContent=S.xp;$('hpStat').textContent=S.hp+'/'+S.maxHp;$('atkStat').textContent=S.atk;$('defStat').textContent=S.def;$('powerStat').textContent=S.atk+S.def;$('hpBar').style.width=S.hp/S.maxHp*100+'%';$('dayLabel').textContent=S.run?'第 '+S.day+' / 30 天':'尚未啟程';$('homeHint').textContent=S.ended?'本輪已結束，可重新開始。':'每次前進一天，遭遇隨機事件。';$('dayBig').textContent='第 '+S.day+' / 30 天';$('dayBar').style.width=(S.day/30*100)+'%';$('dayBar2').style.width=(S.day/30*100)+'%';$('dayEvent').textContent=S.day===15?'精英節點':S.day===30?'首領節點':'探索中';$('pathLabel').textContent=S.path?'已選擇：'+names[S.path]:'尚未選擇流派';
+ $('playerHp').textContent=S.hp+'/'+S.maxHp;$('playerHpBar').style.width=S.hp/S.maxHp*100+'%';$('enemyTitle').textContent=S.enemy?S.enemy.name:'敵方';$('enemyHp').textContent=S.enemy?Math.max(0,S.enemy.hp)+'/'+S.enemy.max:'--';$('enemyHpBar').style.width=S.enemy?Math.max(0,S.enemy.hp/S.enemy.max*100)+'%':'0%';$('advanceBtn').disabled=!S.run||S.ended||!!S.enemy;$('battleStatus').textContent=S.enemy?'交戰中':S.ended?'試煉結束':'等待事件';
+ $('equipment').innerHTML=gearSlots.map(([k,n])=>'<div class="equip"><b>'+n+'</b>'+(S.gear[k]?S.gear[k].name+' · '+S.gear[k].rarity+'品':'尚未裝備')+'</div>').join('');
+ $('inventory').innerHTML=S.inventory.length?S.inventory.map(g=>'<button class="equip" onclick="equip('+g.id+')"><b>'+g.name+' · '+g.rarity+'</b>'+g.label+' / '+g.affix+' +'+g.bonus+'</button>').join(''):'<div class="muted">背包空空</div>';
+ $('skills').innerHTML=S.skills.length?S.skills.map(s=>'<div class="equip"><b>'+s.name+'</b>'+s.desc+'<div class="muted">'+s.rarity+'</div></div>').join(''):'<div class="muted">尚未領悟功法</div>';$('skillCount').textContent=S.skills.length+' 項';$('chainLog').textContent=S.skills.length?'已習得：'+S.skills.map(x=>x.name).join('、'):'尚未觸發連鎖';$('log').innerHTML=S.log.map(x=>'<div>・'+x+'</div>').join('');save()}
+render();
+</script>
+</body></html>
